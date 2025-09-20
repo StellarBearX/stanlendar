@@ -181,8 +181,8 @@
   - Write integration tests for quick add scenarios
   - _Requirements: 4.2, 4.3, 4.4, 4.5, 9.1, 9.4_
 
-- [ ] 10. CSV/XLSX Import System
-- [ ] 10.1 Implement file upload and parsing
+- [x] 10. CSV/XLSX Import System
+- [x] 10.1 Implement file upload and parsing
   - Create file upload component with drag-and-drop
   - Implement CSV/XLSX parsing with proper error handling
   - Add column detection and data type validation
@@ -190,7 +190,7 @@
   - Write tests for various file formats and edge cases
   - _Requirements: 5.1, 5.3, 5.6_
 
-- [ ] 10.2 Create import preview and column mapping
+- [x] 10.2 Create import preview and column mapping
   - Design ImportPreview component with data table
   - Implement column mapping interface with dropdowns
   - Add data validation preview with error highlighting
@@ -198,7 +198,7 @@
   - Write tests for column mapping and validation scenarios
   - _Requirements: 5.1, 5.2, 5.3, 5.7_
 
-- [ ] 10.3 Implement batch import processing
+- [x] 10.3 Implement batch import processing
   - Create ImportService with batch processing logic
   - Implement subject/section creation from import data
   - Add duplicate detection and merge logic
