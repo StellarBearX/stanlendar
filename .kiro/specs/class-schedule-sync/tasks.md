@@ -72,8 +72,8 @@
   - Write tests for event generation with various schedule patterns
   - _Requirements: 4.4, 4.5, 6.2, 9.1, 9.3_
 
-- [ ] 5. Google Calendar Integration Core
-- [ ] 5.1 Implement Google Calendar API client
+- [x] 5. Google Calendar Integration Core
+- [x] 5.1 Implement Google Calendar API client
   - Create GoogleCalendarService with proper authentication
   - Implement token refresh logic with error handling
   - Add rate limiting and quota management
@@ -81,7 +81,7 @@
   - Write unit tests with mocked Google API responses
   - _Requirements: 6.1, 6.3, 6.6, 7.1_
 
-- [ ] 5.2 Implement calendar event creation and RRULE handling
+- [x] 5.2 Implement calendar event creation and RRULE handling
   - Create event formatting logic for Google Calendar
   - Implement RRULE generation for recurring weekly classes
   - Add Google color mapping from subject colors
@@ -89,7 +89,7 @@
   - Write tests for event formatting and RRULE generation
   - _Requirements: 6.2, 6.3, 7.1, 7.3_
 
-- [ ] 5.3 Implement sync service with conflict resolution
+- [x] 5.3 Implement sync service with conflict resolution
   - Create CalendarSyncService with ETag-based conflict detection
   - Implement bidirectional mapping between local and Google events
   - Add conflict resolution logic for outdated ETags
@@ -97,8 +97,8 @@
   - Write integration tests for sync operations and conflict scenarios
   - _Requirements: 6.1, 6.3, 6.4, 6.5_
 
-- [ ] 6. Idempotency and Job Processing
-- [ ] 6.1 Implement idempotency service
+- [x] 6. Idempotency and Job Processing
+- [x] 6.1 Implement idempotency service
   - Create IdempotencyService with Redis-based deduplication
   - Add idempotency key validation and TTL management
   - Implement request fingerprinting for duplicate detection
@@ -106,7 +106,7 @@
   - Write tests for idempotency scenarios and edge cases
   - _Requirements: 6.5, 6.6_
 
-- [ ] 6.2 Implement background job processing with Bull
+- [x] 6.2 Implement background job processing with Bull
   - Set up Bull queue configuration with Redis
   - Create job processors for sync operations
   - Implement retry logic with exponential backoff
