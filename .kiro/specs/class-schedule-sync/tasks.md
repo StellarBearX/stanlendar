@@ -206,8 +206,8 @@
   - Write integration tests for large import scenarios
   - _Requirements: 5.4, 5.5, 5.6, 5.7_
 
-- [ ] 11. Calendar Synchronization Features
-- [ ] 11.1 Create sync UI and controls
+- [x] 11. Calendar Synchronization Features
+- [x] 11.1 Create sync UI and controls
   - Design sync button and progress indicators
   - Implement sync options (date range, dry run)
   - Add sync history and status display
@@ -215,7 +215,7 @@
   - Write tests for sync UI interactions
   - _Requirements: 6.1, 6.5_
 
-- [ ] 11.2 Implement reminder management
+- [x] 11.2 Implement reminder management
   - Create ReminderService for Google Calendar reminders
   - Implement default and per-subject reminder settings
   - Add reminder configuration UI
