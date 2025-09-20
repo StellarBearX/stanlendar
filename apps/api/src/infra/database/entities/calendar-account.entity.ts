@@ -8,6 +8,7 @@ import {
   JoinColumn,
   Unique,
 } from 'typeorm';
+import { IsNotEmpty, IsIn, IsOptional, IsDate } from 'class-validator';
 import { User } from './user.entity';
 
 @Entity('calendar_account')
@@ -20,21 +21,27 @@ export class CalendarAccount {
   userId: string;
 
   @Column()
+  @IsIn(['google'])
   provider: 'google';
 
   @Column({ name: 'google_sub' })
+  @IsNotEmpty()
   googleSub: string;
 
   @Column({ name: 'access_token_enc' })
+  @IsNotEmpty()
   accessTokenEnc: string;
 
   @Column({ name: 'refresh_token_enc' })
+  @IsNotEmpty()
   refreshTokenEnc: string;
 
   @Column({ name: 'token_expires_at' })
+  @IsDate()
   tokenExpiresAt: Date;
 
   @Column({ name: 'primary_calendar_id', nullable: true })
+  @IsOptional()
   primaryCalendarId?: string;
 
   @CreateDateColumn({ name: 'created_at' })
