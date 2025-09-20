@@ -26,8 +26,8 @@
   - Write integration tests for repository operations
   - _Requirements: 4.3, 5.4, 6.2, 8.2_
 
-- [ ] 3. Authentication and Security Foundation
-- [ ] 3.1 Implement Google OAuth2 with PKCE
+- [x] 3. Authentication and Security Foundation
+- [x] 3.1 Implement Google OAuth2 with PKCE
 
   - Set up Google OAuth2 strategy with Passport.js
   - Implement PKCE flow with state parameter validation
@@ -35,7 +35,7 @@
   - Write unit tests for OAuth flow components
   - _Requirements: 1.1, 1.2, 1.4, 10.3_
 
-- [ ] 3.2 Implement JWT token management and encryption
+- [x] 3.2 Implement JWT token management and encryption
 
   - Create CryptoService for AES-256-GCM token encryption
   - Implement JWT access/refresh token generation with rotation
@@ -44,7 +44,7 @@
   - Write security tests for token handling
   - _Requirements: 1.2, 1.4, 10.1, 10.2, 10.5_
 
-- [ ] 3.3 Implement session management and middleware
+- [x] 3.3 Implement session management and middleware
 
   - Set up Redis-based session storage
   - Create authentication middleware for request validation
