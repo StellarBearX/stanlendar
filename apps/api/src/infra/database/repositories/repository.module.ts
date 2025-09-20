@@ -14,6 +14,8 @@ import { TypeOrmCalendarAccountRepository } from './typeorm-calendar-account.rep
 import { TypeOrmSubjectRepository } from './typeorm-subject.repository';
 import { TypeOrmSectionRepository } from './typeorm-section.repository';
 import { TypeOrmLocalEventRepository } from './typeorm-local-event.repository';
+import { TypeOrmImportJobRepository } from './typeorm-import-job.repository';
+import { TypeOrmImportItemRepository } from './typeorm-import-item.repository';
 
 // Repository tokens for dependency injection
 export const USER_REPOSITORY = 'USER_REPOSITORY';
@@ -21,6 +23,8 @@ export const CALENDAR_ACCOUNT_REPOSITORY = 'CALENDAR_ACCOUNT_REPOSITORY';
 export const SUBJECT_REPOSITORY = 'SUBJECT_REPOSITORY';
 export const SECTION_REPOSITORY = 'SECTION_REPOSITORY';
 export const LOCAL_EVENT_REPOSITORY = 'LOCAL_EVENT_REPOSITORY';
+export const IMPORT_JOB_REPOSITORY = 'IMPORT_JOB_REPOSITORY';
+export const IMPORT_ITEM_REPOSITORY = 'IMPORT_ITEM_REPOSITORY';
 
 @Module({
   imports: [
@@ -56,6 +60,14 @@ export const LOCAL_EVENT_REPOSITORY = 'LOCAL_EVENT_REPOSITORY';
       provide: LOCAL_EVENT_REPOSITORY,
       useClass: TypeOrmLocalEventRepository,
     },
+    {
+      provide: IMPORT_JOB_REPOSITORY,
+      useClass: TypeOrmImportJobRepository,
+    },
+    {
+      provide: IMPORT_ITEM_REPOSITORY,
+      useClass: TypeOrmImportItemRepository,
+    },
   ],
   exports: [
     USER_REPOSITORY,
@@ -63,6 +75,8 @@ export const LOCAL_EVENT_REPOSITORY = 'LOCAL_EVENT_REPOSITORY';
     SUBJECT_REPOSITORY,
     SECTION_REPOSITORY,
     LOCAL_EVENT_REPOSITORY,
+    IMPORT_JOB_REPOSITORY,
+    IMPORT_ITEM_REPOSITORY,
   ],
 })
 export class RepositoryModule {}
