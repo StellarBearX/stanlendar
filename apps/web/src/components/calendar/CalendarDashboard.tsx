@@ -7,6 +7,10 @@ import timeGridPlugin from '@fullcalendar/timegrid'
 import interactionPlugin from '@fullcalendar/interaction'
 import { useQuery } from '@tanstack/react-query'
 import { eventsApi } from '@/lib/api'
+import QuickAddClass from './QuickAddClass'
+import SyncControls from './SyncControls'
+import SyncHistory from './SyncHistory'
+import ReminderSettings from './ReminderSettings'
 
 interface CalendarEvent {
   id: string
@@ -36,6 +40,8 @@ const SUBJECT_COLORS = {
 
 export default function CalendarDashboard() {
   const [currentView, setCurrentView] = useState('dayGridMonth')
+  const [isQuickAddOpen, setIsQuickAddOpen] = useState(false)
+  const [isReminderSettingsOpen, setIsReminderSettingsOpen] = useState(false)
   const [dateRange, setDateRange] = useState({
     start: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
     end: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
@@ -134,37 +140,66 @@ export default function CalendarDashboard() {
           <h2 className="text-lg font-medium text-gray-900">
             Class Schedule
           </h2>
-          <div className="flex space-x-2">
+          <div className="flex items-center space-x-4">
             <button
-              onClick={() => handleViewChange('dayGridMonth')}
-              className={`px-3 py-1 text-sm rounded-md ${
-                currentView === 'dayGridMonth'
-                  ? 'bg-primary-100 text-primary-700'
-                  : 'text-gray-500 hover:text-gray-700'
-              }`}
+              onClick={() => setIsQuickAddOpen(true)}
+              className="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
             >
-              Month
+              Quick Add Class
             </button>
+            
+            {/* Sync Controls */}
+            <SyncControls 
+              onSyncComplete={(result) => {
+                // Refresh events after sync
+                // The query will automatically refetch due to invalidation
+              }}
+            />
+            
+            <SyncHistory />
+            
             <button
-              onClick={() => handleViewChange('timeGridWeek')}
-              className={`px-3 py-1 text-sm rounded-md ${
-                currentView === 'timeGridWeek'
-                  ? 'bg-primary-100 text-primary-700'
-                  : 'text-gray-500 hover:text-gray-700'
-              }`}
+              onClick={() => setIsReminderSettingsOpen(true)}
+              className="inline-flex items-center px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
             >
-              Week
+              <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-5 5v-5zM4 19h6v-2H4v2zM4 15h8v-2H4v2zM4 11h8V9H4v2zM4 7h8V5H4v2z" />
+              </svg>
+              Reminders
             </button>
-            <button
-              onClick={() => handleViewChange('timeGridDay')}
-              className={`px-3 py-1 text-sm rounded-md ${
-                currentView === 'timeGridDay'
-                  ? 'bg-primary-100 text-primary-700'
-                  : 'text-gray-500 hover:text-gray-700'
-              }`}
-            >
-              Day
-            </button>
+            
+            <div className="flex space-x-2">
+              <button
+                onClick={() => handleViewChange('dayGridMonth')}
+                className={`px-3 py-1 text-sm rounded-md ${
+                  currentView === 'dayGridMonth'
+                    ? 'bg-primary-100 text-primary-700'
+                    : 'text-gray-500 hover:text-gray-700'
+                }`}
+              >
+                Month
+              </button>
+              <button
+                onClick={() => handleViewChange('timeGridWeek')}
+                className={`px-3 py-1 text-sm rounded-md ${
+                  currentView === 'timeGridWeek'
+                    ? 'bg-primary-100 text-primary-700'
+                    : 'text-gray-500 hover:text-gray-700'
+                }`}
+              >
+                Week
+              </button>
+              <button
+                onClick={() => handleViewChange('timeGridDay')}
+                className={`px-3 py-1 text-sm rounded-md ${
+                  currentView === 'timeGridDay'
+                    ? 'bg-primary-100 text-primary-700'
+                    : 'text-gray-500 hover:text-gray-700'
+                }`}
+              >
+                Day
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -232,6 +267,21 @@ export default function CalendarDashboard() {
           ))}
         </div>
       </div>
+
+      {/* Quick Add Modal */}
+      <QuickAddClass
+        isOpen={isQuickAddOpen}
+        onClose={() => setIsQuickAddOpen(false)}
+        onSuccess={() => {
+          // Calendar events will be automatically refreshed via query invalidation
+        }}
+      />
+
+      {/* Reminder Settings Modal */}
+      <ReminderSettings
+        isOpen={isReminderSettingsOpen}
+        onClose={() => setIsReminderSettingsOpen(false)}
+      />
     </div>
   )
 }
