@@ -9,8 +9,8 @@
   - Set up environment configuration and validation
   - _Requirements: All requirements depend on proper infrastructure_
 
-- [ ] 2. Database Schema and Models Implementation
-- [ ] 2.1 Create database entities and migrations
+- [x] 2. Database Schema and Models Implementation
+- [x] 2.1 Create database entities and migrations
 
   - Implement User, CalendarAccount, Subject, Section, LocalEvent entities with TypeORM
   - Create database migration files with proper constraints and indexes
@@ -18,7 +18,7 @@
   - Write unit tests for entity validation and relationships
   - _Requirements: 1.3, 2.1, 4.3, 5.4, 6.2_
 
-- [ ] 2.2 Implement repository pattern and basic CRUD operations
+- [x] 2.2 Implement repository pattern and basic CRUD operations
 
   - Create repository interfaces and implementations for all entities
   - Add database connection pooling and error handling
