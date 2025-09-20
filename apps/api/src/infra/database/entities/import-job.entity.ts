@@ -7,6 +7,7 @@ import {
   OneToMany,
   JoinColumn,
 } from 'typeorm';
+import { IsIn, IsOptional, IsObject } from 'class-validator';
 import { User } from './user.entity';
 import { ImportItem } from './import-item.entity';
 
@@ -19,15 +20,20 @@ export class ImportJob {
   userId: string;
 
   @Column({ name: 'source_type' })
+  @IsIn(['csv', 'xlsx'])
   sourceType: 'csv' | 'xlsx';
 
   @Column({ name: 'column_map', type: 'jsonb', nullable: true })
+  @IsOptional()
+  @IsObject()
   columnMap?: Record<string, string>;
 
   @Column()
+  @IsIn(['pending', 'preview', 'applied', 'failed'])
   state: 'pending' | 'preview' | 'applied' | 'failed';
 
   @Column({ name: 'error_message', nullable: true })
+  @IsOptional()
   errorMessage?: string;
 
   @CreateDateColumn({ name: 'created_at' })
