@@ -90,6 +90,7 @@ export const authApi = {
 export const subjectsApi = {
   getAll: () => apiClient.get('/api/subjects'),
   create: (data: any) => apiClient.post('/api/subjects', data),
+  quickAdd: (data: any) => apiClient.post('/api/subjects/quick-add', data),
   update: (id: string, data: any) => apiClient.put(`/api/subjects/${id}`, data),
   delete: (id: string) => apiClient.delete(`/api/subjects/${id}`),
 }
@@ -117,4 +118,68 @@ export const eventsApi = {
 // Sync API
 export const syncApi = {
   syncToGoogle: (data: any) => apiClient.post('/api/sync/google', data),
+  getHistory: () => apiClient.get('/api/sync/history'),
+  resolveConflicts: (data: any) => apiClient.post('/api/sync/resolve-conflicts', data),
+}
+
+// Reminder API
+export const reminderApi = {
+  getUserPreferences: () => apiClient.get('/api/reminders'),
+  updateUserPreferences: (data: any) => apiClient.put('/api/reminders', data),
+  getSubjectSettings: (subjectId: string) => apiClient.get(`/api/reminders/subjects/${subjectId}`),
+  updateSubjectSettings: (subjectId: string, data: any) => apiClient.put(`/api/reminders/subjects/${subjectId}`, data),
+  bulkUpdateSubjectReminders: (subjectId: string, data: any) => apiClient.post(`/api/reminders/subjects/${subjectId}/bulk-update`, { reminderSettings: data }),
+  getEventSettings: (eventId: string) => apiClient.get(`/api/reminders/events/${eventId}`),
+  getPresets: () => apiClient.get('/api/reminders/presets'),
+}
+
+// Spotlight API
+export const spotlightApi = {
+  search: (query: any, limit?: number, offset?: number) => {
+    const searchParams = new URLSearchParams()
+    
+    // Add query parameters
+    if (query.text) searchParams.set('text', query.text)
+    if (query.room) searchParams.set('room', query.room)
+    if (query.teacher) searchParams.set('teacher', query.teacher)
+    if (query.dateFrom) searchParams.set('dateFrom', query.dateFrom)
+    if (query.dateTo) searchParams.set('dateTo', query.dateTo)
+    if (query.viewMode) searchParams.set('viewMode', query.viewMode)
+    
+    // Add array parameters
+    if (query.subjectIds?.length) {
+      query.subjectIds.forEach((id: string) => searchParams.append('subjectIds', id))
+    }
+    if (query.sectionIds?.length) {
+      query.sectionIds.forEach((id: string) => searchParams.append('sectionIds', id))
+    }
+    if (query.secCodes?.length) {
+      query.secCodes.forEach((code: string) => searchParams.append('secCodes', code))
+    }
+    
+    // Add pagination
+    if (limit) searchParams.set('limit', limit.toString())
+    if (offset) searchParams.set('offset', offset.toString())
+    
+    return apiClient.get(`/api/spotlight/search?${searchParams.toString()}`)
+  },
+  
+  getSuggestions: {
+    subjects: (text: string) => apiClient.get(`/api/spotlight/suggestions/subjects?text=${encodeURIComponent(text)}`),
+    rooms: (text: string) => apiClient.get(`/api/spotlight/suggestions/rooms?text=${encodeURIComponent(text)}`),
+    teachers: (text: string) => apiClient.get(`/api/spotlight/suggestions/teachers?text=${encodeURIComponent(text)}`),
+    sections: (text: string) => apiClient.get(`/api/spotlight/suggestions/sections?text=${encodeURIComponent(text)}`),
+  },
+
+  // Saved Filters API
+  savedFilters: {
+    getAll: () => apiClient.get('/api/spotlight/saved-filters'),
+    create: (data: { name: string; query: any }) => apiClient.post('/api/spotlight/saved-filters', data),
+    get: (id: string) => apiClient.get(`/api/spotlight/saved-filters/${id}`),
+    update: (id: string, data: { name: string; query: any }) => apiClient.put(`/api/spotlight/saved-filters/${id}`, data),
+    delete: (id: string) => apiClient.delete(`/api/spotlight/saved-filters/${id}`),
+    duplicate: (id: string, newName: string) => apiClient.post(`/api/spotlight/saved-filters/${id}/duplicate`, { newName }),
+    export: () => apiClient.get('/api/spotlight/saved-filters/export/all'),
+    import: (filters: Array<{ name: string; query: any }>) => apiClient.post('/api/spotlight/saved-filters/import', { filters }),
+  }
 }
