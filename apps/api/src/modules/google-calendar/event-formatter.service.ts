@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { LocalEvent } from '../../infra/database/entities/local-event.entity';
 import { Subject } from '../../infra/database/entities/subject.entity';
 import { Section } from '../../infra/database/entities/section.entity';
+import { ReminderService } from './reminder.service';
 import { GoogleCalendarEvent } from './google-calendar.service';
 
 export interface EventFormattingOptions {
@@ -26,6 +27,7 @@ export interface ColorMapping {
 
 @Injectable()
 export class EventFormatterService {
+  constructor(private readonly reminderService: ReminderService) {}
   private readonly timezone = 'Asia/Bangkok';
   
   // Google Calendar color palette
@@ -46,15 +48,14 @@ export class EventFormatterService {
   /**
    * Formats a local event into a Google Calendar event
    */
-  formatSingleEvent(
+  async formatSingleEvent(
     localEvent: LocalEvent,
     subject: Subject,
     section: Section,
     options: EventFormattingOptions = {},
-  ): GoogleCalendarEvent {
+  ): Promise<GoogleCalendarEvent> {
     const {
       includeReminders = true,
-      defaultReminderMinutes = 15,
       timezone = this.timezone,
     } = options;
 
@@ -64,9 +65,12 @@ export class EventFormatterService {
     // Create description
     const description = this.createEventDescription(subject, section, localEvent);
     
-    // Format date and time
-    const startDateTime = this.formatDateTime(localEvent.eventDate, localEvent.startTime, timezone);
-    const endDateTime = this.formatDateTime(localEvent.eventDate, localEvent.endTime, timezone);
+    // Format date and time - convert string to Date if needed
+    const eventDate = typeof localEvent.eventDate === 'string' 
+      ? new Date(localEvent.eventDate) 
+      : localEvent.eventDate;
+    const startDateTime = this.formatDateTime(eventDate, localEvent.startTime, timezone);
+    const endDateTime = this.formatDateTime(eventDate, localEvent.endTime, timezone);
     
     // Map color
     const colorId = this.mapSubjectColorToGoogle(subject.colorHex);
@@ -88,15 +92,8 @@ export class EventFormatterService {
 
     // Add reminders if requested
     if (includeReminders) {
-      googleEvent.reminders = {
-        useDefault: false,
-        overrides: [
-          {
-            method: 'popup',
-            minutes: defaultReminderMinutes,
-          },
-        ],
-      };
+      const reminderSettings = await this.reminderService.getEventReminderSettings(localEvent.id);
+      googleEvent.reminders = this.reminderService.formatRemindersForGoogle(reminderSettings);
     }
 
     return googleEvent;
@@ -105,38 +102,37 @@ export class EventFormatterService {
   /**
    * Formats a recurring event with RRULE for weekly classes
    */
-  formatRecurringEvent(
+  async formatRecurringEvent(
     localEvents: LocalEvent[],
     subject: Subject,
     section: Section,
     options: EventFormattingOptions = {},
-  ): GoogleCalendarEvent {
+  ): Promise<GoogleCalendarEvent> {
     if (localEvents.length === 0) {
       throw new Error('Cannot create recurring event from empty event list');
     }
 
     // Sort events by date to get the first occurrence
-    const sortedEvents = localEvents.sort((a, b) => 
-      new Date(a.eventDate).getTime() - new Date(b.eventDate).getTime()
-    );
+    const sortedEvents = localEvents.sort((a, b) => {
+      const dateA = typeof a.eventDate === 'string' ? new Date(a.eventDate) : a.eventDate;
+      const dateB = typeof b.eventDate === 'string' ? new Date(b.eventDate) : b.eventDate;
+      return dateA.getTime() - dateB.getTime();
+    });
     
     const firstEvent = sortedEvents[0];
     const lastEvent = sortedEvents[sortedEvents.length - 1];
 
-    const {
-      includeReminders = true,
-      defaultReminderMinutes = 15,
-      timezone = this.timezone,
-    } = options;
-
     // Create base event
-    const baseEvent = this.formatSingleEvent(firstEvent, subject, section, {
+    const baseEvent = await this.formatSingleEvent(firstEvent, subject, section, {
       ...options,
       useRecurrence: false,
     });
 
     // Generate RRULE
-    const rrule = this.generateRRule(localEvents, lastEvent.eventDate);
+    const lastEventDate = typeof lastEvent.eventDate === 'string' 
+      ? new Date(lastEvent.eventDate) 
+      : lastEvent.eventDate;
+    const rrule = this.generateRRule(localEvents, lastEventDate);
     
     // Add recurrence rule
     baseEvent.recurrence = [rrule];
@@ -152,7 +148,10 @@ export class EventFormatterService {
     const dayMap = new Map<number, LocalEvent[]>();
     
     events.forEach(event => {
-      const dayOfWeek = new Date(event.eventDate).getDay();
+      const eventDate = typeof event.eventDate === 'string' 
+        ? new Date(event.eventDate) 
+        : event.eventDate;
+      const dayOfWeek = eventDate.getDay();
       if (!dayMap.has(dayOfWeek)) {
         dayMap.set(dayOfWeek, []);
       }
@@ -286,9 +285,9 @@ export class EventFormatterService {
     // Remove # if present
     const cleanHex = hex.replace('#', '');
     
-    const r = parseInt(cleanHex.substr(0, 2), 16);
-    const g = parseInt(cleanHex.substr(2, 2), 16);
-    const b = parseInt(cleanHex.substr(4, 2), 16);
+    const r = parseInt(cleanHex.substring(0, 2), 16);
+    const g = parseInt(cleanHex.substring(2, 4), 16);
+    const b = parseInt(cleanHex.substring(4, 6), 16);
     
     return { r, g, b };
   }
