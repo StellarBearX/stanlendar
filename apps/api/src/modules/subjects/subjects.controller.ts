@@ -13,8 +13,10 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 import { SubjectsService } from './subjects.service';
+import { QuickAddService, QuickAddResult } from './quick-add.service';
 import { CreateSubjectDto } from './dto/create-subject.dto';
 import { UpdateSubjectDto } from './dto/update-subject.dto';
+import { QuickAddClassDto } from './dto/quick-add-class.dto';
 import { SubjectResponseDto } from './dto/subject-response.dto';
 import { JwtAuthGuard } from '../auth/guards/auth.guard';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
@@ -22,7 +24,10 @@ import { CurrentUser } from '../auth/decorators/current-user.decorator';
 @Controller('subjects')
 @UseGuards(JwtAuthGuard)
 export class SubjectsController {
-  constructor(private readonly subjectsService: SubjectsService) {}
+  constructor(
+    private readonly subjectsService: SubjectsService,
+    private readonly quickAddService: QuickAddService,
+  ) {}
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
@@ -31,6 +36,15 @@ export class SubjectsController {
     @Body() createSubjectDto: CreateSubjectDto,
   ): Promise<SubjectResponseDto> {
     return this.subjectsService.create(userId, createSubjectDto);
+  }
+
+  @Post('quick-add')
+  @HttpCode(HttpStatus.CREATED)
+  async quickAddClass(
+    @CurrentUser('id') userId: string,
+    @Body() quickAddDto: QuickAddClassDto,
+  ): Promise<QuickAddResult> {
+    return this.quickAddService.quickAddClass(userId, quickAddDto);
   }
 
   @Get()
