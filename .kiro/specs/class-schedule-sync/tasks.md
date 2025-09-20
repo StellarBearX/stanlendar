@@ -1,6 +1,6 @@
 # Implementation Plan
 
-- [-] 1. Project Setup and Core Infrastructure
+- [x] 1. Project Setup and Core Infrastructure
 
   - Set up monorepo structure with Next.js frontend and NestJS backend
   - Configure TypeScript, ESLint, and Prettier for both apps
