@@ -114,8 +114,8 @@
   - Write tests for job processing and retry scenarios
   - _Requirements: 6.5, 6.6_
 
-- [ ] 7. Frontend Calendar Dashboard
-- [ ] 7.1 Create Next.js app structure and routing
+- [x] 7. Frontend Calendar Dashboard
+- [x] 7.1 Create Next.js app structure and routing
   - Set up Next.js 14 with App Router
   - Configure Tailwind CSS and component structure
   - Create authentication pages and protected routes
@@ -123,7 +123,7 @@
   - Write component tests with React Testing Library
   - _Requirements: 2.1, 2.3, 2.5_
 
-- [ ] 7.2 Implement FullCalendar integration
+- [x] 7.2 Implement FullCalendar integration
   - Create CalendarDashboard component with FullCalendar
   - Implement month/week/agenda view switching
   - Add event rendering with subject color coding
@@ -131,7 +131,7 @@
   - Write tests for calendar component interactions
   - _Requirements: 2.1, 2.2, 2.3, 2.4_
 
-- [ ] 7.3 Implement authentication UI and Google OAuth flow
+- [x] 7.3 Implement authentication UI and Google OAuth flow
   - Create login page with Google Sign-in button
   - Implement OAuth callback handling in frontend
   - Add authentication state management with Zustand
