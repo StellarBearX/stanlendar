@@ -164,8 +164,8 @@
   - Write tests for saved filter persistence and retrieval
   - _Requirements: 8.1, 8.2, 8.3, 8.4, 8.5_
 
-- [ ] 9. Quick Add Class Feature
-- [ ] 9.1 Create Quick Add form component
+- [x] 9. Quick Add Class Feature
+- [x] 9.1 Create Quick Add form component
   - Design and implement QuickAddClass form with validation
   - Add time picker and day selection components
   - Implement date range picker for semester dates
@@ -173,7 +173,7 @@
   - Write component tests for form validation and submission
   - _Requirements: 4.1, 4.2, 4.3, 9.1, 9.2_
 
-- [ ] 9.2 Implement Quick Add backend processing
+- [x] 9.2 Implement Quick Add backend processing
   - Create QuickAddService with input validation
   - Implement subject/section creation or lookup logic
   - Add event generation from quick add data
