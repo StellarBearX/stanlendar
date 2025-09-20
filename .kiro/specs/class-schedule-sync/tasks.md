@@ -139,8 +139,8 @@
   - Write E2E tests for authentication flow
   - _Requirements: 1.1, 1.5_
 
-- [ ] 8. Spotlight Filter System
-- [ ] 8.1 Implement backend filter query processing
+- [x] 8. Spotlight Filter System
+- [x] 8.1 Implement backend filter query processing
   - Create SpotlightService with full-text search capabilities
   - Implement PostgreSQL tsvector search for subjects/rooms/teachers
   - Add filter combination logic (AND/OR operations)
@@ -148,7 +148,7 @@
   - Write performance tests for filter queries with large datasets
   - _Requirements: 3.1, 3.2, 3.3, 3.5_
 
-- [ ] 8.2 Create Spotlight filter UI components
+- [x] 8.2 Create Spotlight filter UI components
   - Create SpotlightFilter component with search input
   - Implement subject/section chip selection interface
   - Add filter mode toggle (hide/dim others)
@@ -156,7 +156,7 @@
   - Write component tests for filter interactions
   - _Requirements: 3.1, 3.2, 3.3, 3.4, 3.6_
 
-- [ ] 8.3 Implement saved filters functionality
+- [x] 8.3 Implement saved filters functionality
   - Create SavedFilter entity and repository
   - Implement filter saving and loading API endpoints
   - Add saved filter management UI
