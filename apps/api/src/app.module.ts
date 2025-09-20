@@ -10,6 +10,8 @@ import { AuthModule } from './modules/auth/auth.module';
 import { SubjectsModule } from './modules/subjects/subjects.module';
 import { SectionsModule } from './modules/sections/sections.module';
 import { EventsModule } from './modules/events/events.module';
+import { SpotlightModule } from './modules/spotlight/spotlight.module';
+import { ImportModule } from './modules/import/import.module';
 import { SecurityHeadersMiddleware, RequestLoggingMiddleware } from './modules/auth/middleware/security.middleware';
 import { CorsMiddleware } from './modules/auth/middleware/cors.middleware';
 import { RateLimitMiddleware, AuthRateLimitMiddleware } from './modules/auth/middleware/rate-limit.middleware';
@@ -26,6 +28,8 @@ import { RateLimitMiddleware, AuthRateLimitMiddleware } from './modules/auth/mid
     SubjectsModule,
     SectionsModule,
     EventsModule,
+    SpotlightModule,
+    ImportModule,
   ],
   controllers: [AppController],
   providers: [AppService],
