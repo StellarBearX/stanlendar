@@ -6,6 +6,7 @@ import {
   JoinColumn,
   Unique,
 } from 'typeorm';
+import { IsNotEmpty, IsObject } from 'class-validator';
 import { User } from './user.entity';
 
 @Entity('saved_filter')
@@ -18,9 +19,11 @@ export class SavedFilter {
   userId: string;
 
   @Column()
+  @IsNotEmpty()
   name: string;
 
   @Column({ type: 'jsonb' })
+  @IsObject()
   query: {
     subjectIds?: string[];
     secCodes?: string[];
