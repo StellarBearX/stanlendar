@@ -7,6 +7,9 @@ import { AppService } from './app.service';
 import { DatabaseModule } from './infra/database/database.module';
 import { RedisModule } from './infra/redis/redis.module';
 import { AuthModule } from './modules/auth/auth.module';
+import { SubjectsModule } from './modules/subjects/subjects.module';
+import { SectionsModule } from './modules/sections/sections.module';
+import { EventsModule } from './modules/events/events.module';
 import { SecurityHeadersMiddleware, RequestLoggingMiddleware } from './modules/auth/middleware/security.middleware';
 import { CorsMiddleware } from './modules/auth/middleware/cors.middleware';
 import { RateLimitMiddleware, AuthRateLimitMiddleware } from './modules/auth/middleware/rate-limit.middleware';
@@ -20,6 +23,9 @@ import { RateLimitMiddleware, AuthRateLimitMiddleware } from './modules/auth/mid
     DatabaseModule,
     RedisModule,
     AuthModule,
+    SubjectsModule,
+    SectionsModule,
+    EventsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

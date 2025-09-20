@@ -297,7 +297,7 @@ export class AuthService {
         this.revokeTokenFamily(payload.family);
       } catch (error) {
         // Token might be invalid, but we still want to logout
-        console.warn('Invalid refresh token during logout:', error.message);
+        console.warn('Invalid refresh token during logout:', error instanceof Error ? error.message : error);
       }
     }
     

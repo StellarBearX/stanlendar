@@ -47,7 +47,7 @@ export class RateLimitMiddleware implements NestMiddleware {
       // Set rate limit headers
       res.setHeader('X-RateLimit-Limit', this.options.maxRequests);
       res.setHeader('X-RateLimit-Remaining', Math.max(0, this.options.maxRequests - current));
-      res.setHeader('X-RateLimit-Reset', new Date(Date.now() + this.options.windowMs));
+      res.setHeader('X-RateLimit-Reset', new Date(Date.now() + this.options.windowMs).toISOString());
 
       if (current > this.options.maxRequests) {
         throw new HttpException(
