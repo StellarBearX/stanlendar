@@ -3,65 +3,76 @@ import {
   NestInterceptor,
   ExecutionContext,
   CallHandler,
-  Logger,
-} from '@nestjs/common';
-import { Observable } from 'rxjs';
-import { tap, catchError } from 'rxjs/operators';
-import { Request, Response } from 'express';
+} from '@nestjs/common'
+import { Observable } from 'rxjs'
+import { tap } from 'rxjs/operators'
+import { Request, Response } from 'express'
+import { StructuredLoggerService } from '../services/logger.service'
+import { v4 as uuidv4 } from 'uuid'
 
 @Injectable()
 export class LoggingInterceptor implements NestInterceptor {
-  private readonly logger = new Logger(LoggingInterceptor.name);
+  constructor(private readonly logger: StructuredLoggerService) {}
 
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
-    const request = context.switchToHttp().getRequest<Request>();
-    const response = context.switchToHttp().getResponse<Response>();
-    const { method, url, headers } = request;
-    const userAgent = headers['user-agent'];
-    const userId = (request as any).user?.id;
-    const startTime = Date.now();
+    const request = context.switchToHttp().getRequest<Request>()
+    const response = context.switchToHttp().getResponse<Response>()
+    const { method, url, headers, body } = request
+    
+    // Generate correlation ID if not present
+    const correlationId = headers['x-correlation-id'] as string || uuidv4()
+    request.headers['x-correlation-id'] = correlationId
+    response.setHeader('x-correlation-id', correlationId)
 
-    // Generate request ID if not present
-    const requestId = headers['x-request-id'] || this.generateRequestId();
-    response.setHeader('x-request-id', requestId);
+    // Extract user ID from request if available
+    const userId = (request as any).user?.id
 
-    const logContext = {
-      requestId,
-      method,
-      url,
-      userAgent,
+    const startTime = Date.now()
+
+    // Log incoming request
+    this.logger.logRequest(method, url, {
+      correlationId,
       userId,
-    };
-
-    this.logger.log(`Incoming request`, logContext);
+      userAgent: headers['user-agent'],
+      ip: request.ip,
+      bodySize: body ? JSON.stringify(body).length : 0,
+    })
 
     return next.handle().pipe(
-      tap((data) => {
-        const duration = Date.now() - startTime;
-        this.logger.log(`Request completed`, {
-          ...logContext,
-          statusCode: response.statusCode,
-          duration,
-          responseSize: JSON.stringify(data || {}).length,
-        });
-      }),
-      catchError((error) => {
-        const duration = Date.now() - startTime;
-        this.logger.error(`Request failed`, {
-          ...logContext,
-          duration,
-          error: {
-            name: error.name,
-            message: error.message,
-          },
-        });
-        throw error;
-      }),
-    );
-  }
+      tap({
+        next: (data) => {
+          const latency = Date.now() - startTime
+          
+          // Log successful response
+          this.logger.logResponse(method, url, response.statusCode, latency, {
+            correlationId,
+            userId,
+            responseSize: data ? JSON.stringify(data).length : 0,
+          })
 
-  private generateRequestId(): string {
-    return Math.random().toString(36).substring(2, 15) + 
-           Math.random().toString(36).substring(2, 15);
+          // Log performance metrics for slow requests
+          if (latency > 1000) {
+            this.logger.logPerformanceMetric('slow_request', latency, 'ms', {
+              correlationId,
+              userId,
+              route: url,
+              method,
+            })
+          }
+        },
+        error: (error) => {
+          const latency = Date.now() - startTime
+          
+          // Log error response
+          this.logger.error(`${method} ${url} failed`, {
+            correlationId,
+            userId,
+            latency,
+            error,
+            statusCode: response.statusCode || 500,
+          })
+        },
+      }),
+    )
   }
 }

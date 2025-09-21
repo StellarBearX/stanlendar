@@ -1,0 +1,136 @@
+# Production Monitoring and Alerting Configuration
+
+# Application Health Alerts
+health_checks:
+  - name: "API Health Check Failed"
+    condition: "health_check_status != 'healthy'"
+    severity: "critical"
+    description: "API health check is failing"
+    runbook: "Check database and Redis connectivity"
+    
+  - name: "Database Connection Issues"
+    condition: "database_response_time > 1000ms OR database_status != 'healthy'"
+    severity: "critical"
+    description: "Database is slow or unavailable"
+    runbook: "Check Supabase dashboard and connection pool"
+    
+  - name: "Redis Connection Issues"
+    condition: "redis_response_time > 500ms OR redis_status != 'healthy'"
+    severity: "high"
+    description: "Redis is slow or unavailable"
+    runbook: "Check Redis Cloud dashboard"
+
+# Performance Alerts
+performance:
+  - name: "High API Response Time"
+    condition: "avg_response_time > 2000ms over 5min"
+    severity: "high"
+    description: "API response times are elevated"
+    runbook: "Check database queries and external API calls"
+    
+  - name: "High Error Rate"
+    condition: "error_rate > 5% over 5min"
+    severity: "high"
+    description: "API error rate is elevated"
+    runbook: "Check application logs for error patterns"
+    
+  - name: "Memory Usage High"
+    condition: "memory_usage > 80% over 10min"
+    severity: "medium"
+    description: "Application memory usage is high"
+    runbook: "Check for memory leaks and restart if needed"
+
+# Google API Alerts
+google_api:
+  - name: "Google API Quota Exhausted"
+    condition: "google_api_quota_remaining < 100"
+    severity: "high"
+    description: "Google API quota is nearly exhausted"
+    runbook: "Monitor usage and consider quota increase"
+    
+  - name: "Google API Error Rate High"
+    condition: "google_api_error_rate > 10% over 5min"
+    severity: "medium"
+    description: "High error rate from Google API"
+    runbook: "Check Google API status and authentication"
+
+# Security Alerts
+security:
+  - name: "High Failed Login Attempts"
+    condition: "failed_login_attempts > 50 over 5min"
+    severity: "medium"
+    description: "Unusual number of failed login attempts"
+    runbook: "Check for potential brute force attacks"
+    
+  - name: "Rate Limit Exceeded"
+    condition: "rate_limit_exceeded_count > 100 over 5min"
+    severity: "low"
+    description: "High number of rate limit violations"
+    runbook: "Check for potential abuse or adjust limits"
+
+# Infrastructure Alerts
+infrastructure:
+  - name: "High CPU Usage"
+    condition: "cpu_usage > 80% over 10min"
+    severity: "medium"
+    description: "High CPU usage detected"
+    runbook: "Check for resource-intensive operations"
+    
+  - name: "Disk Space Low"
+    condition: "disk_usage > 85%"
+    severity: "high"
+    description: "Disk space is running low"
+    runbook: "Clean up logs and temporary files"
+
+# Business Logic Alerts
+business:
+  - name: "Sync Job Failures High"
+    condition: "sync_job_failure_rate > 20% over 15min"
+    severity: "medium"
+    description: "High rate of sync job failures"
+    runbook: "Check Google Calendar API and user permissions"
+    
+  - name: "Import Job Queue Backed Up"
+    condition: "import_queue_length > 100"
+    severity: "low"
+    description: "Import job queue is backed up"
+    runbook: "Check job processing and add workers if needed"
+
+# Notification Channels
+notifications:
+  email:
+    - "devops@company.com"
+    - "engineering@company.com"
+  
+  slack:
+    webhook_url: "${SLACK_WEBHOOK_URL}"
+    channel: "#alerts"
+  
+  pagerduty:
+    integration_key: "${PAGERDUTY_INTEGRATION_KEY}"
+    
+# Alert Routing
+routing:
+  critical:
+    - email
+    - slack
+    - pagerduty
+  high:
+    - email
+    - slack
+  medium:
+    - slack
+  low:
+    - slack
+
+# Escalation Policy
+escalation:
+  - level: 1
+    timeout: "5min"
+    notify: ["on-call-engineer"]
+  - level: 2
+    timeout: "15min"
+    notify: ["engineering-manager"]
+  - level: 3
+    timeout: "30min"
+    notify: ["cto"]
