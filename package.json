@@ -9,6 +9,13 @@
   ],
   "scripts": {
     "dev": "turbo run dev",
+    "dev:api": "cd apps/api && npm run dev",
+    "dev:web": "cd apps/web && npm run dev",
+    "dev:test": "node scripts/start-test-mode.js",
+    "test-mode": "node scripts/complete-test-mode.js",
+    "test-mode:simple": "node scripts/simple-test-mode.js",
+    "test-mode:complete": "node scripts/complete-test-mode.js",
+    "mock-api": "node scripts/mock-api-server.js",
     "build": "turbo run build",
     "test": "turbo run test",
     "lint": "turbo run lint",
@@ -44,5 +51,9 @@
   "engines": {
     "node": ">=18.0.0",
     "npm": ">=9.0.0"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^5.1.0"
   }
 }
